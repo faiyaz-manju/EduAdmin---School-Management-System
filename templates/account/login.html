@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login — EduAdmin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { heading: ['Syne','sans-serif'], body: ['DM Sans','sans-serif'] },
+          colors: {
+            ink:'#0C0C0E', panel:'#141416', lift:'#1C1C1F', edge:'#252528',
+            line:'#2E2E32', dim:'#6B6B72', soft:'#A0A0AA', light:'#E8E5DF',
+            gold:'#D4A843', 'gold-dim':'#2A2318', 'gold-bdr':'#3D3420',
+            success:'#3D9E6E', danger:'#C94F4F', info:'#4A7FCC',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"/>
+</head>
+<body class="h-full bg-ink text-light font-body antialiased flex">
+
+  <!-- Left decorative panel -->
+  <div class="hidden lg:flex w-[420px] shrink-0 bg-panel border-r border-line flex-col justify-between p-10">
+    <div>
+      <div class="font-heading font-800 text-2xl text-gold tracking-tight">EduAdmin</div>
+      <div class="text-[10px] text-dim tracking-[2.5px] uppercase mt-1">School Management</div>
+    </div>
+
+    <div class="space-y-8">
+      <div class="space-y-1">
+        <div class="text-[11px] text-dim tracking-widest uppercase mb-4">Access Roles</div>
+        {% for role, icon, desc in roles_info %}
+        <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-lift border border-line">
+          <div class="w-7 h-7 rounded-md bg-gold-dim border border-gold-bdr flex items-center justify-center">
+            <i class="ti {{ icon }} text-gold text-sm"></i>
+          </div>
+          <div>
+            <div class="text-[13px] font-medium text-light">{{ role }}</div>
+            <div class="text-[11px] text-dim">{{ desc }}</div>
+          </div>
+        </div>
+        {% empty %}
+        <!-- Static fallback -->
+        <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-lift border border-line">
+          <div class="w-7 h-7 rounded-md bg-gold-dim border border-gold-bdr flex items-center justify-center">
+            <i class="ti ti-shield-check text-gold text-sm"></i>
+          </div>
+          <div>
+            <div class="text-[13px] font-medium text-light">Admin</div>
+            <div class="text-[11px] text-dim">Full system access</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-lift border border-line">
+          <div class="w-7 h-7 rounded-md bg-gold-dim border border-gold-bdr flex items-center justify-center">
+            <i class="ti ti-user-check text-gold text-sm"></i>
+          </div>
+          <div>
+            <div class="text-[13px] font-medium text-light">Teacher</div>
+            <div class="text-[11px] text-dim">Class & attendance view</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-lift border border-line">
+          <div class="w-7 h-7 rounded-md bg-gold-dim border border-gold-bdr flex items-center justify-center">
+            <i class="ti ti-user-circle text-gold text-sm"></i>
+          </div>
+          <div>
+            <div class="text-[13px] font-medium text-light">Student</div>
+            <div class="text-[11px] text-dim">Personal fee status</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-lift border border-line">
+          <div class="w-7 h-7 rounded-md bg-gold-dim border border-gold-bdr flex items-center justify-center">
+            <i class="ti ti-heart-handshake text-gold text-sm"></i>
+          </div>
+          <div>
+            <div class="text-[13px] font-medium text-light">Parent</div>
+            <div class="text-[11px] text-dim">Ward fee & receipts</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="text-[11px] text-dim/50">© 2024 EduAdmin. All rights reserved.</div>
+  </div>
+
+  <!-- Right login form -->
+  <div class="flex-1 flex items-center justify-center p-8">
+    <div class="w-full max-w-sm">
+
+      <div class="mb-10">
+        <div class="font-heading font-bold text-3xl text-light tracking-tight mb-2">Welcome back</div>
+        <p class="text-sm text-dim">Sign in to your school dashboard</p>
+      </div>
+      
+      {% if messages %}
+        {% for message in messages %}
+          <div class="flex items-center gap-2 px-4 py-3 rounded-xl bg-danger/10 border border-danger/20 text-danger text-sm mb-6">
+            <i class="ti ti-check-circle text-base"></i>
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="post" class="space-y-4">
+        {% csrf_token %}
+
+        <!-- Username -->
+        <div>
+          <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Username or Email</label>
+          <div class="relative">
+            <i class="ti ti-user absolute left-3.5 top-1/2 -translate-y-1/2 text-dim text-base"></i>
+            <input type="text" name="email" value="{{ form.email.value|default:'' }}"
+                   placeholder="your.username"
+                   class="w-full bg-lift border border-line rounded-xl pl-10 pr-4 py-3 text-sm text-light
+                          placeholder:text-dim/50 focus:outline-none focus:border-gold/50 focus:bg-panel transition-all">
+          </div>
+          {% if form.email.errors %}
+          <p class="text-danger text-xs mt-1">{{ form.email.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Password</label>
+          <div class="relative">
+            <i class="ti ti-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-dim text-base"></i>
+            <input type="password" name="password"
+                   placeholder="••••••••"
+                   class="w-full bg-lift border border-line rounded-xl pl-10 pr-4 py-3 text-sm text-light
+                          placeholder:text-dim/50 focus:outline-none focus:border-gold/50 focus:bg-panel transition-all">
+            <button type="button" onclick="this.previousElementSibling.type = this.previousElementSibling.type === 'password' ? 'text' : 'password'"
+                    class="absolute right-3.5 top-1/2 -translate-y-1/2 text-dim hover:text-light transition-colors">
+              <i class="ti ti-eye text-base"></i>
+            </button>
+          </div>
+          {% if form.password.errors %}
+          <p class="text-danger text-xs mt-1">{{ form.password.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Submit -->
+        <button type="submit"
+                class="w-full bg-gold text-ink font-heading font-semibold py-3 rounded-xl text-sm
+                       hover:bg-gold/90 active:scale-[0.99] transition-all mt-2">
+          Sign In <i class="ti ti-arrow-right ml-1"></i>
+        </button>
+
+      </form>
+
+      <p class="text-center text-xs text-dim mt-8">
+        Contact your administrator if you've forgotten your credentials.
+      </p>
+
+    </div>
+  </div>
+
+</body>
+</html>

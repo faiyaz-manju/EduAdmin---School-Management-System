@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Teachers{% endblock %}
+{% block page_title %}Teachers{% endblock %}
+
+{% block breadcrumb %}
+<div class="flex items-center gap-2 text-[12px] text-dim mt-0.5">
+	<a href="{% url 'dashboard' %}" class="hover:text-gold transition-colors">Dashboard</a>
+	<i class="ti ti-chevron-right text-xs"></i>
+	<span>Teachers</span>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- Top stats -->
+<div class="grid grid-cols-4 gap-4 mb-6">
+	<div class="bg-panel border border-line rounded-2xl p-5">
+		<div class="text-[10px] text-dim tracking-[2px] uppercase mb-3">Total Teachers</div>
+		<div class="font-heading font-bold text-2xl text-light tracking-tight mb-1">{{ teachers|length|default:"12" }}</div>
+		<div class="text-[11px] text-dim">Active staff</div>
+	</div>
+	<div class="bg-panel border border-line rounded-2xl p-5">
+		<div class="text-[10px] text-dim tracking-[2px] uppercase mb-3">Subjects</div>
+		<div class="font-heading font-bold text-2xl text-light tracking-tight mb-1">{{ subject_count|default:"18" }}</div>
+		<div class="text-[11px] text-dim">Covered</div>
+	</div>
+	<div class="bg-panel border border-line rounded-2xl p-5">
+		<div class="text-[10px] text-dim tracking-[2px] uppercase mb-3">On Leave</div>
+		<div class="font-heading font-bold text-2xl text-danger tracking-tight mb-1">{{ on_leave|default:"1" }}</div>
+		<div class="text-[11px] text-dim">This month</div>
+	</div>
+	<div class="bg-panel border border-line rounded-2xl p-5">
+		<div class="text-[10px] text-dim tracking-[2px] uppercase mb-3">Vacancies</div>
+		<div class="font-heading font-bold text-2xl text-light tracking-tight mb-1">{{ vacancies|default:"0" }}</div>
+		<div class="text-[11px] text-dim">Open roles</div>
+	</div>
+</div>
+
+<div class="grid  gap-4">
+
+	<!-- Add Teacher Form -->
+	<div class="col-span-3">
+		<div class="bg-panel border border-line rounded-2xl p-6 sticky top-0">
+			<div class="font-heading text-[11px] font-semibold tracking-[2px] uppercase text-dim mb-5 pb-3 border-b border-line">
+				Add Teacher
+			</div>
+
+			<form method="post" action="" class="space-y-4">
+				{% csrf_token %}
+
+				<div>
+					<label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Full Name *</label>
+					<input type="text" name="name" placeholder="e.g. John Doe"
+								class="w-full bg-lift border border-line rounded-xl px-4 py-2.5 text-[13px] text-light placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all">
+
+                            	{% if form.name.errors %}
+                                    <p class="text-danger text-xs mt-1">{{ form.name.errors.0 }}</p>
+                                {% endif %}
+				</div>
+
+				<div class="grid grid-cols-1 gap-4">
+					{% comment %} <div>
+						<label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Employee ID</label>
+						<input type="text" name="employee_id" placeholder="EMP-001"
+									class="w-full bg-lift border border-line rounded-xl px-4 py-2.5 text-[13px] text-light placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all">
+					</div> {% endcomment %}
+					<div>
+						<label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Phone</label>
+						<input type="text" name="phone_number" placeholder="e.g. 1234567890"
+									class="w-full bg-lift border border-line rounded-xl px-4 py-2.5 text-[13px] text-light placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all">
+                                
+                                    {% if form.phone_number.errors %}
+                                        <p class="text-danger text-xs mt-1">{{ form.phone_number.errors.0 }}</p>
+                                    {% endif %}
+					</div>
+				</div>
+
+				<div>
+					<label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Subject</label>
+					<input type="text" name="subject" placeholder="e.g. Mathematics"
+								class="w-full bg-lift border border-line rounded-xl px-4 py-2.5 text-[13px] text-light placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all">
+
+                                {% if form.subject.errors %}
+                                    <p class="text-danger text-xs mt-1">{{ form.subject.errors.0 }}</p>
+                                {% endif %}
+				</div>
+
+				<div>
+					<label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Email</label>
+					<input type="email" name="email" placeholder="e.g.teacher@example.com"
+								 class="w-full bg-lift border border-line rounded-xl px-4 py-2.5 text-[13px] text-light placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all">
+
+                                 {% if form.email.errors %}
+                                    <p class="text-danger text-xs mt-1">{{ form.email.errors.0 }}</p>
+                                 {% endif %}
+				</div>
+
+				<button type="submit" class="w-full bg-gold text-ink font-heading font-semibold text-sm py-2.5 rounded-xl hover:bg-gold/90 active:scale-[0.99] transition-all">
+					Add Teacher
+				</button>
+			</form>
+		</div>
+	</div>
+
+	<!-- Teachers list -->
+	<div class="col-span-3">
+		<div class="bg-panel border border-line rounded-2xl overflow-hidden">
+			<div class="px-5 py-4 border-b border-line flex items-center justify-between">
+				<div class="font-heading text-[11px] font-semibold tracking-[2px] uppercase text-dim">Teacher Directory</div>
+				<div class="text-[13px] text-dim">Showing {{ teachers|length|default:"0" }} records</div>
+			</div>
+			<table class="w-full">
+				<thead class="bg-lift/40 border-b border-line">
+					<tr>
+						<th class="text-left text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Name</th>
+						<th class="text-left text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Email</th>
+						<th class="text-left text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Subject</th>
+						<th class="text-left text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Contact No.</th>
+						<th class="text-right text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Actions</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y divide-line/40">
+					{% for teacher in teachers %}
+					<tr class="hover:bg-lift/30 transition-colors">
+						<td class="px-5 py-3.5 text-[13px] text-light">{{ teacher.name }}</td>
+						<td class="px-5 py-3.5 text-[13px] text-soft">{{ teacher.email }}</td>
+						<td class="px-5 py-3.5 text-[13px] text-soft">{{ teacher.subject }}</td>
+						<td class="px-5 py-3.5 text-[13px] text-soft">{{ teacher.phone_number }}</td>
+						<td class="px-5 py-3.5 text-right">
+							<a href="{% url 'edit_teacher' teacher.id %}" class="text-dim hover:text-light px-2">Edit</a>
+							<a href="{% url 'delete_teacher' teacher.id %}" class="text-dim hover:text-danger px-2">Delete</a>
+						</td>
+					</tr>
+					{% empty %}
+					<tr>
+						<td colspan="5" class="px-5 py-6 text-center text-[13px] text-dim">No teachers found.</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</div>
+
+{% endblock %}
+

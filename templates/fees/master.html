@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}Fee Master{% endblock %}
+{% block page_title %}Fee Master{% endblock %}
+
+{% block topbar_actions %}
+<a href="{% url 'master' %}"
+   class="flex items-center gap-2 bg-gold text-ink font-heading font-semibold text-xs px-4 py-2 rounded-lg hover:bg-gold/90 transition-all">
+  <i class="ti ti-plus text-sm"></i> Add Fee
+</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="space-y-6">
+  <!-- Fee form -->
+  <div class="bg-panel border border-line rounded-2xl p-6">
+    <div class="font-heading text-[11px] font-semibold tracking-[2px] uppercase text-dim mb-5 pb-3 border-b border-line">
+      Add / Update Fee Master
+    </div>
+
+    <form method="post" class="space-y-5">
+      {% csrf_token %}
+      <div>
+        <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Class *</label>
+        <select class="w-full bg-lift border border-line rounded-xl px-4 py-2.5 text-[13px] text-light focus:outline-none focus:border-gold/50 transition-all" name="student_class">
+          {% for class in classes %}
+							<option value="{{ class.id }}">{{ class.class_name }}</option>
+						{% endfor %}
+        </select>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Admission Amount</label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[13px] text-dim">₹</span>
+            <input type="number" name="admission" placeholder="0"
+                   class="w-full bg-lift border border-line rounded-xl pl-8 pr-4 py-2.5 text-[13px] text-light placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all">
+                   
+                   {% if form.admission.errors %}
+                    <p class="text-danger text-xs mt-1">{{ form.admission.errors.0 }}</p>
+                   {% endif %}
+                    
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Hostel Amount</label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[13px] text-dim">₹</span>
+            <input type="number" name="hostel" placeholder="0"
+                   class="w-full bg-lift border border-line rounded-xl pl-8 pr-4 py-2.5 text-[13px] text-light placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all">
+
+                   {% if form.hostel.errors %}
+                    <p class="text-danger text-xs mt-1">{{ form.hostel.errors.0 }}</p>
+                   {% endif %}
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Transport Amount</label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[13px] text-dim">₹</span>
+            <input type="number" name="transport" placeholder="0"
+                   class="w-full bg-lift border border-line rounded-xl pl-8 pr-4 py-2.5 text-[13px] text-light placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all">
+
+                   {% if form.transport.errors %}
+                    <p class="text-danger text-xs mt-1">{{ form.transport.errors.0 }}</p>
+                   {% endif %}
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">School Amount</label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[13px] text-dim">₹</span>
+            <input type="number" name="school" placeholder="0"
+                   class="w-full bg-lift border border-line rounded-xl pl-8 pr-4 py-2.5 text-[13px] text-light placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all">
+
+                   {% if form.school.errors %}
+                    <p class="text-danger text-xs mt-1">{{ form.school.errors.0 }}</p>
+                   {% endif %}
+          </div>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Tuition Amount</label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[13px] text-dim">₹</span>
+            <input type="number" name="tuition" placeholder="0"
+                   class="w-full bg-lift border border-line rounded-xl pl-8 pr-4 py-2.5 text-[13px] text-light placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all">
+
+                   {% if form.tuition.errors %}
+                    <p class="text-danger text-xs mt-1">{{ form.tution.errors.0 }}</p>
+                   {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <button type="submit"
+              class="w-full bg-gold text-ink font-heading font-semibold text-sm py-2.5 rounded-xl hover:bg-gold/90 active:scale-[0.99] transition-all mt-2">
+        Save Fee Master
+      </button>
+    </form>
+  </div>
+
+  <!-- Fee matrix table -->
+  <div class="bg-panel border border-line rounded-2xl overflow-hidden">
+    <div class="px-5 py-4 border-b border-line flex items-center justify-between">
+      <div class="font-heading text-[11px] font-semibold tracking-[2px] uppercase text-dim">Fee Schedule by Class</div>
+      <div class="text-[11px] text-dim">All amounts in ₹ INR</div>
+    </div>
+    <table class="w-full">
+      <thead class="bg-lift/40 border-b border-line">
+        <tr>
+          <th class="text-left text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Class</th>
+          <th class="text-right text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Admission</th>
+          <th class="text-right text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Hostel</th>
+          <th class="text-right text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Transport</th>
+          <th class="text-right text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">School</th>
+          <th class="text-right text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Tuition</th>
+          {% comment %} <th class="text-center text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Actions</th> {% endcomment %}
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-line/40">
+        {% for fee in feemaster %}
+        <tr class="hover:bg-lift/30 transition-colors">
+          <td class="px-5 py-3.5">
+            <span class="text-[11px] bg-info/10 text-info border border-info/20 px-2.5 py-0.5 rounded-full">{{ fee.student_class.class_name }}</span>
+          </td>
+          <td class="px-5 py-3.5 text-right text-[13px] text-soft">₹{{ fee.admission }}</td>
+          <td class="px-5 py-3.5 text-right text-[13px] text-soft">₹{{ fee.hostel }}</td>
+          <td class="px-5 py-3.5 text-right text-[13px] text-soft">₹{{ fee.transport }}</td>
+          <td class="px-5 py-3.5 text-right text-[13px] text-soft">₹{{ fee.school }}</td>
+          <td class="px-5 py-3.5 text-right text-[13px] text-soft">₹{{ fee.tuition }}</td>
+          {% comment %} <td class="px-5 py-3.5 text-center">
+            <a href="{% url 'delete_fees' fee.id %}" class="text-danger hover:text-danger/80 text-[13px]">Delete</a>
+          </td> {% endcomment %}
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="px-5 py-8 text-center text-[13px] text-dim">No fee data yet. The table will show class-wise fee records here.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

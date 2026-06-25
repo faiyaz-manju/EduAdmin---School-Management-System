@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Students{% endblock %}
+{% block page_title %}Students{% endblock %}
+
+{% block topbar_actions %}
+<div class="flex items-center gap-2">
+  <!-- Search -->
+  <div class="relative">
+    <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-dim text-sm"></i>
+    <input type="text" placeholder="Search students…"
+           class="bg-lift border border-line rounded-lg pl-8 pr-4 py-2 text-[13px] text-light
+                  placeholder:text-dim/50 focus:outline-none focus:border-gold/40 w-52 transition-all">
+  </div>
+  <!-- Class filter -->
+  <select class="bg-lift border border-line rounded-lg px-3 py-2 text-[13px] text-soft focus:outline-none focus:border-gold/40 transition-all">
+    <option value="">All Classes</option>
+    <option>Pre-Primary</option>
+    {% for i in "12345678910" %}{% endfor %}
+    <option>Class I</option><option>Class II</option><option>Class III</option>
+    <option>Class IV</option><option>Class V</option><option>Class VI</option>
+    <option>Class VII</option><option>Class VIII</option><option>Class IX</option><option>Class X</option>
+  </select>
+  <!-- Add -->
+  <a href="{% url 'add_student' %}"
+     class="flex items-center gap-2 bg-gold text-ink font-heading font-semibold text-xs px-4 py-2 rounded-lg hover:bg-gold/90 transition-all">
+    <i class="ti ti-plus text-sm"></i> Add Student
+  </a>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- Stats strip -->
+<div class="grid grid-cols-4 gap-3 mb-6">
+  <div class="bg-panel border border-line rounded-xl px-4 py-3 flex items-center justify-between">
+    <div><div class="text-[10px] text-dim uppercase tracking-widest">Total</div><div class="font-heading font-bold text-xl text-light mt-0.5">{{ total_students|default:"1,248" }}</div></div>
+    <i class="ti ti-users text-2xl text-dim/20"></i>
+  </div>
+  <div class="bg-panel border border-line rounded-xl px-4 py-3 flex items-center justify-between">
+    <div><div class="text-[10px] text-dim uppercase tracking-widest">Fee Cleared</div><div class="font-heading font-bold text-xl text-success mt-0.5">{{ cleared_count|default:"892" }}</div></div>
+    <i class="ti ti-circle-check text-2xl text-dim/20"></i>
+  </div>
+  <div class="bg-panel border border-line rounded-xl px-4 py-3 flex items-center justify-between">
+    <div><div class="text-[10px] text-dim uppercase tracking-widest">Pending</div><div class="font-heading font-bold text-xl text-danger mt-0.5">{{ pending_count|default:"356" }}</div></div>
+    <i class="ti ti-alert-circle text-2xl text-dim/20"></i>
+  </div>
+  <div class="bg-panel border border-line rounded-xl px-4 py-3 flex items-center justify-between">
+    <div><div class="text-[10px] text-dim uppercase tracking-widest">Classes</div><div class="font-heading font-bold text-xl text-light mt-0.5">11</div></div>
+    <i class="ti ti-school text-2xl text-dim/20"></i>
+  </div>
+</div>
+
+<!-- Students Table -->
+<div class="bg-panel border border-line rounded-2xl overflow-hidden">
+  <table class="w-full">
+    <thead class="border-b border-line bg-lift/40">
+      <tr>
+        <th class="text-left text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Student</th>
+        <th class="text-left text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Class</th>
+        <th class="text-left text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Parent</th>
+        <th class="text-left text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Phone</th>
+        <th class="text-left text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Fee Status</th>
+        <th class="text-right text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-line/40">
+      {% for student in students %}
+      <tr class="hover:bg-lift/30 transition-colors">
+        <td class="px-5 py-3.5">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gold-dim border border-gold-bdr flex items-center justify-center text-[11px] font-bold text-gold">
+              {{ student.name.0 }}
+            </div>
+            <div>
+              <div class="text-[13px] text-light font-medium">{{ student.name }}</div>
+              <div class="text-[11px] text-dim">DOB: {{ student.date_of_birth|date:"d M Y" }}</div>
+            </div>
+          </div>
+        </td>
+        <td class="px-5 py-3.5">
+          <span class="text-[11px] bg-info/10 text-info border border-info/20 px-2.5 py-0.5 rounded-full">
+            {{ student.student_class.class_name }}
+          </span>
+        </td>
+        <td class="px-5 py-3.5 text-[13px] text-soft">{{ student.father_name }}</td>
+        <td class="px-5 py-3.5 text-[13px] text-soft">{{ student.phone_number }}</td>
+        <td class="px-5 py-3.5">
+          {% if student.fee_status == 'cleared' %}
+            <span class="text-[11px] bg-success/10 text-success border border-success/20 px-2.5 py-0.5 rounded-full">Cleared</span>
+          {% elif student.fee_status == 'due' %}
+            <span class="text-[11px] bg-danger/10 text-danger border border-danger/20 px-2.5 py-0.5 rounded-full">Due</span>
+          {% else %}
+            <span class="text-[11px] bg-gold-dim text-gold border border-gold-bdr px-2.5 py-0.5 rounded-full">Partial</span>
+          {% endif %}
+        </td>
+        <td class="px-5 py-3.5 text-right">
+          <div class="flex items-center justify-end gap-2">
+            <a href="{% url 'student_profile' student.id %}"
+               class="text-dim hover:text-light transition-colors p-1" title="View">
+              <i class="ti ti-eye text-base"></i>
+            </a>
+            <a href="{% url 'edit_student' student.id %}"
+               class="text-dim hover:text-gold transition-colors p-1" title="Edit">
+              <i class="ti ti-edit text-base"></i>
+            </a>
+            <a href=""
+               class="text-dim hover:text-info transition-colors p-1" title="Receipts">
+              <i class="ti ti-file-invoice text-base"></i>
+            </a>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="7" class="text-center text-[13px] text-dim py-6">No students found.</td>
+      </tr>
+      {% endfor %}
+
+    </tbody>
+  </table>
+
+  <!-- Pagination -->
+  <div class="px-5 py-4 border-t border-line flex items-center justify-between">
+    <div class="text-[12px] text-dim">Showing 1–20 of {{ total_students|default:"1,248" }} students</div>
+    <div class="flex gap-1">
+      <button class="w-8 h-8 rounded-lg bg-lift border border-line text-[12px] text-dim hover:text-light transition-all flex items-center justify-center">
+        <i class="ti ti-chevron-left text-sm"></i>
+      </button>
+      <button class="w-8 h-8 rounded-lg bg-gold-dim border border-gold-bdr text-[12px] text-gold flex items-center justify-center">1</button>
+      <button class="w-8 h-8 rounded-lg bg-lift border border-line text-[12px] text-dim hover:text-light transition-all flex items-center justify-center">2</button>
+      <button class="w-8 h-8 rounded-lg bg-lift border border-line text-[12px] text-dim hover:text-light transition-all flex items-center justify-center">3</button>
+      <button class="w-8 h-8 rounded-lg bg-lift border border-line text-[12px] text-dim hover:text-light transition-all flex items-center justify-center">
+        <i class="ti ti-chevron-right text-sm"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

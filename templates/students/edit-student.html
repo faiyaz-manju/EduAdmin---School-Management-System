@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Student{% endblock %}
+{% block page_title %}Edit Student{% endblock %}
+
+{% block breadcrumb %}
+<div class="flex items-center gap-2 text-[12px] text-dim mt-0.5">
+  <a href="{% url 'show_students' %}" class="hover:text-gold transition-colors">Students</a>
+  <i class="ti ti-chevron-right text-xs"></i>
+  <span>{{ student.name }}</span>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="max-w-3xl">
+  <form method="post" class="space-y-5">
+    {% csrf_token %}
+
+    <!-- Personal Info -->
+    <div class="bg-panel border border-line rounded-2xl p-6">
+      <div class="font-heading text-[11px] font-semibold tracking-[2px] uppercase text-dim mb-5 pb-3 border-b border-line">
+        Personal Information
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+
+        <div class="col-span-2">
+          <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Full Name *</label>
+          <input type="text" name="name" value="{{ form.name.value|default:'' }}"
+                 placeholder="e.g. Arjun Ramesh Patel"
+                 class="w-full bg-lift border border-line rounded-xl px-4 py-2.5 text-[13px] text-light
+                        placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all">
+          {% if form.name.errors %}<p class="text-danger text-xs mt-1">{{ form.name.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div>
+          <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Father's Name *</label>
+          <input type="text" name="father_name" value="{{ form.father_name.value|default:'' }}"
+                 placeholder="Father's full name"
+                 class="w-full bg-lift border border-line rounded-xl px-4 py-2.5 text-[13px] text-light
+                        placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all">
+                        {% if form.father_name.errors %}<p class="text-danger text-xs mt-1">{{ form.father_name.errors.0 }}</p>{% endif %}
+        
+        </div>
+
+        <div>
+          <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Mother's Name</label>
+          <input type="text" name="mother_name" value="{{ form.mother_name.value|default:'' }}"
+                 placeholder="Mother's full name"
+                 class="w-full bg-lift border border-line rounded-xl px-4 py-2.5 text-[13px] text-light
+                        placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all">
+                        {% if form.mother_name.errors %}<p class="text-danger text-xs mt-1">{{ form.mother_name.errors.0 }}</p>{% endif %}
+        </div>
+
+        <div>
+          <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Date of Birth *</label>
+          <input type="date" name="date_of_birth" value="{{ form.date_of_birth.value|default:'' }}"
+                 class="w-full bg-lift border border-line rounded-xl px-4 py-2.5 text-[13px] text-light
+                        focus:outline-none focus:border-gold/50 transition-all">
+                        
+          {% if form.date_of_birth.errors %}
+          <p class="text-danger text-xs mt-1">{{ form.date_of_birth.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Class *</label>
+          <select name="student_class"
+                  class="w-full bg-lift border border-line rounded-xl px-4 py-2.5 text-[13px] text-light
+                         focus:outline-none focus:border-gold/50 transition-all">
+            <option value="">Select class…</option>
+            
+            {% for value, label in form.student_class.field.choices %}
+              <option value="{{ value }}" {% if form.student_class.value == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="bg-panel border border-line rounded-2xl p-6">
+      <div class="font-heading text-[11px] font-semibold tracking-[2px] uppercase text-dim mb-5 pb-3 border-b border-line">
+        Contact & Identity
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+
+        <div>
+          <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Phone Number *</label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[13px] text-dim">+91</span>
+            <input type="text" name="phone_number" value="{{ form.phone_number.value|default:'' }}"
+                   placeholder="98765 43210"
+                   maxlength="10"
+                   class="w-full bg-lift border border-line rounded-xl pl-12 pr-4 py-2.5 text-[13px] text-light
+                          placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all">
+
+            {% if form.phone_number.errors %}
+            <p class="text-danger text-xs mt-1">{{ form.phone_number.errors.0 }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Aadhaar Number</label>
+          <input type="text" name="adhar_number" value="{{ form.adhar_number.value|default:'' }}"
+                 placeholder="XXXX XXXX XXXX"
+                 maxlength="12"
+                 class="w-full bg-lift border border-line rounded-xl px-4 py-2.5 text-[13px] text-light
+                        placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all">
+                        
+            {% if form.adhar_number.errors %}
+            <p class="text-danger text-xs mt-1">{{ form.adhar_number.errors.0 }}</p>
+            {% endif %}
+
+        </div>
+
+        <div class="col-span-2">
+          <label class="block text-[11px] text-dim tracking-widest uppercase mb-2">Address</label>
+          <textarea name="address" rows="3"
+                    placeholder="Full residential address…"
+                    class="w-full bg-lift border border-line rounded-xl px-4 py-2.5 text-[13px] text-light
+                           placeholder:text-dim/40 focus:outline-none focus:border-gold/50 transition-all resize-none">{{ form.address.value|default:'' }}</textarea>
+
+            {% if form.address.errors %}
+            <p class="text-danger text-xs mt-1">{{ form.address.errors.0 }}</p>
+            {% endif %}
+            
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Parent Linking -->
+    <div class="bg-panel border border-line rounded-2xl p-6">
+      <div class="font-heading text-[11px] font-semibold tracking-[2px] uppercase text-dim mb-5 pb-3 border-b border-line">
+        Linked Parent Accounts
+      </div>
+      <p class="text-[11px] text-dim mb-3">Parents are auto-linked when father/mother name matches a parent user. Manually assign below:</p>
+      <div class="grid grid-cols-2 gap-3 max-h-48 overflow-y-auto">
+        {% for profile in parent_profiles %}
+        <label class="flex items-center gap-3 rounded-xl border border-line bg-lift/40 px-4 py-3 cursor-pointer hover:border-gold/40 transition-all">
+          <input type="checkbox" name="linked_parents" value="{{ profile.id }}"
+                 {% if profile in student.parents.all %}checked{% endif %}
+                 class="h-4 w-4 rounded border-line bg-lift text-gold focus:ring-gold/30">
+          <div>
+            <div class="text-[13px] text-light font-medium">{{ profile.user.full_name }}</div>
+            <div class="text-[11px] text-dim">{{ profile.user.email }}</div>
+          </div>
+        </label>
+        {% empty %}
+        <p class="text-[13px] text-dim col-span-2">No parent accounts exist yet. Create one from User Management.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-3">
+      <button type="submit"
+              class="bg-gold text-ink font-heading font-semibold text-sm px-6 py-2.5 rounded-xl
+                     hover:bg-gold/90 active:scale-[0.99] transition-all">
+        Update Student
+      </button>
+      <a href="{% url 'show_students' %}"
+         class="text-[13px] text-dim hover:text-light border border-line px-5 py-2.5 rounded-xl hover:bg-lift transition-all">
+        Cancel
+      </a>
+      <button type="button"
+              onclick="confirm('Delete this student? This cannot be undone.') && window.location.href='#'"
+              class="ml-auto text-[13px] text-dim hover:text-danger border border-line hover:border-danger/30 px-5 py-2.5 rounded-xl hover:bg-danger/5 transition-all">
+        <i class="ti ti-trash mr-1"></i> Delete
+      </button>
+    </div>
+
+  </form>
+</div>
+
+{% endblock %}

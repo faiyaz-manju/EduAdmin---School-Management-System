@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}Receipts{% endblock %}
+{% block page_title %}Receipts{% endblock %}
+
+{% block topbar_actions %}
+<div class="flex items-center gap-2">
+  <div class="relative">
+    <i class="ti ti-search absolute left-3 top-1/2 -translate-y-1/2 text-dim text-sm"></i>
+    <input type="text" placeholder="Receipt no. or student…"
+           class="bg-lift border border-line rounded-lg pl-8 pr-4 py-2 text-[13px] text-light
+                  placeholder:text-dim/50 focus:outline-none focus:border-gold/40 w-52 transition-all">
+  </div>
+  <input type="date" class="bg-lift border border-line rounded-lg px-3 py-2 text-[13px] text-soft focus:outline-none focus:border-gold/40 transition-all">
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="bg-panel border border-line rounded-2xl overflow-hidden">
+  <div class="px-5 py-4 border-b border-line flex items-center justify-between">
+    <div class="font-heading text-[11px] font-semibold tracking-[2px] uppercase text-dim">All Receipts</div>
+    <div class="text-[11px] text-dim">{{ receipts|length|default:"248" }} receipts total</div>
+  </div>
+
+  <table class="w-full">
+    <thead class="bg-lift/40 border-b border-line">
+      <tr>
+        <th class="text-left text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Receipt No.</th>
+        <th class="text-center text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Student</th>
+        <th class="text-center text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Class</th>
+        {% comment %} <th class="text-left text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Fee Type</th> {% endcomment %}
+        <th class="text-center text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Amount</th>
+        <th class="text-center text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Date</th>
+        <th class="text-center text-[10px] text-dim tracking-widest uppercase px-5 py-3 font-medium">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-line/40">
+      {% for receipt in receipts %}
+      <tr class="hover:bg-lift/30 transition-colors">
+        <td class="px-5 py-3.5 text-[12px] text-dim font-mono">{{ receipt.receipt_number }}</td>
+        <td class="px-5 py-3.5 text-[13px] text-light font-medium text-center">{{ receipt.student_name }}</td>
+        <td class="px-5 py-3.5 text-center"><span class="text-[11px] bg-info/10 text-info border border-info/20 px-2.5 py-0.5 rounded-full">{{ receipt.student_name.student_class }}</span></td>
+        {% comment %} <td class="px-5 py-3.5 text-[13px] text-soft">{{ receipt.get_fee_type_display }}</td> {% endcomment %}
+        <td class="px-5 py-3.5 text-center text-[13px] font-medium text-success">₹{{ receipt.amount }}</td>
+        <td class="px-5 py-3.5 text-[13px] text-soft text-center">{{ receipt.date|date:"d M Y" }}</td>
+        <td class="px-5 py-3.5 text-center">
+          <div class="flex items-center justify-center gap-2">
+            <a href="{% url 'receipt' receipt.id %}" class="text-dim hover:text-light transition-colors p-1" title="View"><i class="ti ti-eye text-base"></i></a>
+            <a href="{% url 'download_receipt' receipt.id %}" class="text-dim hover:text-gold transition-colors p-1" title="Download"><i class="ti ti-download text-base"></i></a>
+            <a href="javascript:window.print()" class="text-dim hover:text-info transition-colors p-1" title="Print"><i class="ti ti-printer text-base"></i></a>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8" class="px-5 py-10 text-center text-[13px] text-dim">No receipts found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="px-5 py-4 border-t border-line flex items-center justify-between">
+    <div class="text-[12px] text-dim">Showing 1–20 of {{ receipts|length|default:"248" }}</div>
+    <div class="flex gap-1">
+      <a class="w-8 h-8 rounded-lg bg-lift border border-line text-[12px] text-dim hover:text-light transition-all flex items-center justify-center" href="#"><i class="ti ti-chevron-left text-sm"></i></a>
+      <a class="w-8 h-8 rounded-lg bg-gold-dim border border-gold-bdr text-[12px] text-gold flex items-center justify-center" href="#">1</a>
+      <a class="w-8 h-8 rounded-lg bg-lift border border-line text-[12px] text-dim hover:text-light transition-all flex items-center justify-center" href="#">2</a>
+      <a class="w-8 h-8 rounded-lg bg-lift border border-line text-[12px] text-dim hover:text-light transition-all flex items-center justify-center" href="#"><i class="ti ti-chevron-right text-sm"></i></a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

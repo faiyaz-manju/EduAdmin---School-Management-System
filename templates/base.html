@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}EduAdmin{% endblock %} — School Management</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Syne', 'sans-serif'],
+            body:    ['DM Sans', 'sans-serif'],
+          },
+          colors: {
+            ink:    '#0C0C0E',
+            panel:  '#141416',
+            lift:   '#1C1C1F',
+            edge:   '#252528',
+            line:   '#2E2E32',
+            dim:    '#6B6B72',
+            soft:   '#A0A0AA',
+            light:  '#E8E5DF',
+            gold:   '#D4A843',
+            'gold-dim': '#2A2318',
+            'gold-bdr': '#3D3420',
+            success:'#3D9E6E',
+            danger: '#C94F4F',
+            info:   '#4A7FCC',
+            warn:   '#C97B2E',
+          },
+        }
+      }
+    }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"/>
+
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body class="h-full bg-ink text-light font-body antialiased">
+<div class="flex h-screen overflow-hidden">
+
+  <!-- ═══════════════════════════════════════
+       SIDEBAR
+  ═══════════════════════════════════════ -->
+  <aside class="w-56 shrink-0 bg-panel border-r border-line flex flex-col h-full overflow-y-auto">
+
+    <!-- Logo -->
+    <div class="px-5 py-6 border-b border-line">
+      <div class="font-heading font-800 text-xl text-gold tracking-tight">EduAdmin</div>
+      <div class="text-[10px] text-dim tracking-[2.5px] uppercase mt-1">School Management</div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 px-3 py-4 space-y-5">
+      {% if is_admin %}
+        <!-- Full sidebar for admin -->
+        <div>
+          <p class="text-[9px] text-dim/60 tracking-[2.5px] uppercase px-2 mb-2">Overview</p>
+          <div class="space-y-0.5">
+            <a href="{% url 'dashboard' %}"
+               class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-all duration-150
+                      {% if request.resolver_match.app_name == 'dashboard' %}
+                        bg-gold-dim text-gold border border-gold-bdr
+                      {% else %}
+                        text-dim hover:text-light hover:bg-lift
+                      {% endif %}">
+              <i class="ti ti-layout-dashboard text-base w-4"></i> Dashboard
+            </a>
+            <a href="{% url 'account:user' %}"
+               class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-all duration-150
+                      {% if request.resolver_match.app_name == 'account' %}
+                        bg-gold-dim text-gold border border-gold-bdr
+                      {% else %}
+                        text-dim hover:text-light hover:bg-lift
+                      {% endif %}">
+              <i class="ti ti-user text-base w-4"></i> User Management
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <p class="text-[9px] text-dim/60 tracking-[2.5px] uppercase px-2 mb-2">Academics</p>
+          <div class="space-y-0.5">
+            <a href="{% url 'show_students' %}"
+              class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-all duration-150
+                      {% if request.resolver_match.url_name == 'show_students' %}
+                        bg-gold-dim text-gold border border-gold-bdr
+                      {% else %}
+                        text-dim hover:text-light hover:bg-lift
+                      {% endif %}">
+              <i class="ti ti-users text-base w-4"></i> Students
+            </a>
+            <a href="{% url 'show_classes' %}"
+              class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-dim hover:text-light hover:bg-lift transition-all duration-150
+              {% if request.resolver_match.url_name == 'show_classes' %}
+                        bg-gold-dim text-gold border border-gold-bdr
+                      {% else %}
+                        text-dim hover:text-light hover:bg-lift
+                      {% endif %}">
+              <i class="ti ti-school text-base w-4"></i> Classes
+            </a>
+            <a href="{% url 'show_teachers' %}"
+              class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-all duration-150
+                      {% if request.resolver_match.url_name == 'show_teachers' %}
+                        bg-gold-dim text-gold border border-gold-bdr
+                      {% else %}
+                        text-dim hover:text-light hover:bg-lift
+                      {% endif %}">
+              <i class="ti ti-user-check text-base w-4"></i> Teachers
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <p class="text-[9px] text-dim/60 tracking-[2.5px] uppercase px-2 mb-2">Finance</p>
+          <div class="space-y-0.5">
+            <a href="{% url 'master' %}"
+               class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-all duration-150
+                      {% if request.resolver_match.url_name == 'master' %}
+                        bg-gold-dim text-gold border border-gold-bdr
+                      {% else %}
+                        text-dim hover:text-light hover:bg-lift
+                      {% endif %}">
+              <i class="ti ti-coin text-base w-4"></i> Fee Master
+            </a>
+            <a href="{% url 'payment' %}"
+               class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-all duration-150
+                      {% if request.resolver_match.url_name == 'payment' %}
+                        bg-gold-dim text-gold border border-gold-bdr
+                      {% else %}
+                        text-dim hover:text-light hover:bg-lift
+                      {% endif %}">
+              <i class="ti ti-receipt text-base w-4"></i> Payments
+            </a>
+            <a href="{% url 'expenditure' %}"
+               class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-all duration-150
+                      {% if request.resolver_match.app_name == 'expenditure' %}
+                        bg-gold-dim text-gold border border-gold-bdr
+                      {% else %}
+                        text-dim hover:text-light hover:bg-lift
+                      {% endif %}">
+              <i class="ti ti-trending-down text-base w-4"></i> Expenditure
+            </a>
+            <a href="{% url 'show_receipts' %}"
+               class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-all duration-150
+                      {% if request.resolver_match.app_name == 'receipts' %}
+                        bg-gold-dim text-gold border border-gold-bdr
+                      {% else %}
+                        text-dim hover:text-light hover:bg-lift
+                      {% endif %}">
+              <i class="ti ti-file-invoice text-base w-4"></i> Receipts
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <p class="text-[9px] text-dim/60 tracking-[2.5px] uppercase px-2 mb-2">Portals</p>
+          <div class="space-y-0.5">
+            <a href="{% url 'account:portal' %}"
+               class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-dim hover:text-light hover:bg-lift transition-all duration-150">
+              <i class="ti ti-heart-handshake text-base w-4"></i> Parents
+            </a>
+            <a href="{% url 'dashboard' %}"
+               class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-dim hover:text-light hover:bg-lift transition-all duration-150">
+              <i class="ti ti-report-analytics text-base w-4"></i> Reports
+            </a>
+          </div>
+        </div>
+
+      {% elif is_teacher %}
+        <!-- Minimal sidebar for teacher: only Students -->
+        <div>
+          <div class="space-y-0.5">
+            <a href="{% url 'show_students' %}"
+               class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] transition-all duration-150
+                      {% if request.resolver_match.app_name == 'students' %}
+                        bg-gold-dim text-gold border border-gold-bdr
+                      {% else %}
+                        text-dim hover:text-light hover:bg-lift
+                      {% endif %}">
+              <i class="ti ti-users text-base w-4"></i> Students
+            </a>
+          </div>
+        </div>
+
+      {% elif is_parent %}
+        <!-- Sidebar for parent: Portals and allowed finance links removed earlier -->
+        <div>
+          <p class="text-[9px] text-dim/60 tracking-[2.5px] uppercase px-2 mb-2">Portals</p>
+          <div class="space-y-0.5">
+            <a href="{% url 'account:portal' %}"
+               class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-dim hover:text-light hover:bg-lift transition-all duration-150">
+              <i class="ti ti-heart-handshake text-base w-4"></i> Parents
+            </a>
+          </div>
+        </div>
+      {% endif %}
+
+    </nav>
+
+    <!-- Bottom nav -->
+    <div class="px-3 py-4 border-t border-line space-y-0.5">
+      <a href=""
+         class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-dim hover:text-light hover:bg-lift transition-all duration-150">
+        <i class="ti ti-settings text-base w-4"></i> Settings
+      </a>
+        <a href="{% url 'account:logout' %}"
+         class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-dim hover:text-danger hover:bg-danger/5 transition-all duration-150">
+        <i class="ti ti-logout text-base w-4"></i> Logout
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- ═══════════════════════════════════════
+    MAIN COLUMN
+  ═══════════════════════════════════════ -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+    <!-- Topbar -->
+    <header class="h-14 shrink-0 bg-panel border-b border-line flex items-center justify-between px-7">
+      <div>
+        <h1 class="font-heading font-semibold text-lg tracking-tight text-light">
+          {% block page_title %}Dashboard{% endblock %}
+        </h1>
+        {% block breadcrumb %}{% endblock %}
+      </div>
+      <div class="flex items-center gap-3">
+        {% block topbar_actions %}{% endblock %}
+
+        <!-- Notification bell -->
+        <button class="relative text-dim hover:text-light transition-colors p-1">
+          <i class="ti ti-bell text-lg"></i>
+          <span class="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-danger"></span>
+        </button>
+
+        <!-- Role badge -->
+        <span class="text-[11px] font-medium tracking-wider uppercase bg-gold-dim text-gold border border-gold-bdr px-3 py-1 rounded-full">
+          {% if request.user.is_authenticated %}
+            {% if is_admin %}
+                  Admin
+                {% elif is_teacher %}
+                  Teacher
+                {% elif is_parent %}
+                  Parent
+            {% else %}
+              User
+            {% endif %}
+          {% else %}
+            Guest
+          {% endif %}
+        </span>
+
+        <!-- Avatar -->
+        <div class="w-8 h-8 rounded-full bg-gold flex items-center justify-center text-[11px] font-bold text-ink">
+          {% if request.user.is_authenticated %}
+            {{ request.user.first_name|default:request.user.email|slice:":1" }}{{ request.user.last_name|default:""|slice:":1" }}
+          {% else %}
+            G
+          {% endif %}
+        </div>
+      </div>
+    </header>
+
+    <!-- Flash messages -->
+    {% if messages %}
+    <div class="px-7 pt-4 space-y-2">
+      {% for message in messages %}
+      <div class="flex items-center gap-3 px-4 py-3 rounded-xl border text-sm
+                  {% if message.tags == 'success' %} bg-success/10 border-success/20 text-success
+                  {% elif message.tags == 'error' %}  bg-danger/10  border-danger/20  text-danger
+                  {% else %}                           bg-info/10    border-info/20    text-info
+                  {% endif %}">
+        <i class="ti ti-info-circle text-base"></i>
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Page content -->
+    <main class="flex-1 overflow-y-auto p-7">
+      {% block content %}{% endblock %}
+    </main>
+
+  </div>
+</div>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>
