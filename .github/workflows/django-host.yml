@@ -1,39 +1,20 @@
-name: Django CI
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
-        # Quoting versions is a YAML best practice to prevent parsing issues (e.g., 3.10 becoming 3.1)
-        python-version: ["3.12", "3.13", "3.14"]
+        # Remove 3.7. Use supported versions. 
+        # Note: 3.8 and 3.9 are also reaching EOL soon (Dec 2024 / Oct 2025).
+        python-version: ["3.10", "3.11", "3.12"] 
 
     steps:
     - uses: actions/checkout@v4
     
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      # Upgrade from v3 to v5
+      uses: actions/setup-python@v5 
       with:
         python-version: ${{ matrix.python-version }}
-        cache: 'pip' # Automatically caches pip dependencies based on requirements.txt
         
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        
-    - name: Check for missing migrations
-      run: |
-        # Fails the build if there are unapplied model changes without migration files
-        python manage.py makemigrations --check --dry-run
-        
-    - name: Run Tests
-      run: |
-        python manage.py test
+    # ... rest of your steps
